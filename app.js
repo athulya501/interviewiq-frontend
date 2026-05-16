@@ -1,5 +1,4 @@
-const API_BASE = "https://interviewiq-production-9a46.up.railway.app";
-// State
+const API_BASE = "https://interviewiq-production-9a46.up.railway.app";// State
 let token = localStorage.getItem('jwt_token') || null;
 let currentRole = null;
 let questionPool = [];
