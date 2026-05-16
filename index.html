@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InterviewIQ V3 - SaaS Interview Platform</title>
+    <meta name="description" content="Adaptive Mock Interviews with Skill Heatmaps and Global Leaderboards">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="light-mode">
+
+    <!-- Anti-Cheat Overlay -->
+    <div id="anti-cheat-overlay" class="overlay" style="display:none;">
+        <div class="overlay-content">
+            <h2>⚠️ Warning</h2>
+            <p>You have switched tabs or exited full-screen mode.</p>
+            <p>This action is recorded. Please return to the interview immediately.</p>
+            <button id="btn-resume-interview" class="btn btn-primary">Resume Interview</button>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="navbar">
+        <div class="logo">Interview<span>IQ</span> <span class="badge" style="font-size: 0.7rem; background: var(--primary-color); color: white;">V3</span></div>
+        <nav>
+            <button id="theme-toggle" class="btn btn-icon" title="Toggle Dark Mode">🌙</button>
+            <a href="#" id="nav-home">Home</a>
+            <a href="#" id="nav-leaderboard">Leaderboard</a>
+            <a href="#" id="nav-dashboard" style="display: none;">Dashboard</a>
+            <button id="nav-logout" class="btn btn-secondary btn-sm" style="display:none;">Logout</button>
+        </nav>
+    </header>
+
+    <main id="app-container">
+        
+        <!-- SECTION 1: Landing Page (Auth) -->
+        <section id="landing-page" class="view active-view">
+            <div class="hero">
+                <h1>AI-Powered Interview <span class="highlight">Simulation</span></h1>
+                <p>Advanced metrics, skill heatmaps, and adaptive questioning to prepare you for top tech roles.</p>
+                
+                <div class="auth-card" id="auth-container">
+                    <h3>Sign In / Register</h3>
+                    <div class="form-group">
+                        <input type="text" id="username-input" placeholder="Username" />
+                    </div>
+                    <div class="form-group">
+                        <input type="password" id="password-input" placeholder="Password" />
+                    </div>
+                    <button id="btn-auth" class="btn btn-primary w-100">Authenticate (JWT)</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Role Selection -->
+        <section id="role-selection" class="view">
+            <div class="content-wrapper">
+                <h2>Select Your Interview Track</h2>
+                <div class="role-grid">
+                    <div class="role-card" data-role="Java Developer"><h3>Java Developer</h3></div>
+                    <div class="role-card" data-role="Frontend Developer"><h3>Frontend Developer</h3></div>
+                    <div class="role-card" data-role="Python Developer"><h3>Python Developer</h3></div>
+                    <div class="role-card" data-role="DevOps Engineer"><h3>DevOps Engineer</h3></div>
+                    
+                    <div class="role-card" data-role="Backend Developer"><h3>Backend Developer</h3></div>
+                    <div class="role-card" data-role="Full Stack Developer"><h3>Full Stack Developer</h3></div>
+                    <div class="role-card" data-role="Data Structures & Algorithms (DSA)"><h3>DSA Specialist</h3></div>
+                    <div class="role-card" data-role="Database Engineer (SQL Specialist)"><h3>Database Engineer</h3></div>
+                    <div class="role-card" data-role="Cloud Engineer (AWS/Azure/GCP)"><h3>Cloud Engineer</h3></div>
+                    <div class="role-card" data-role="QA / Test Automation Engineer"><h3>QA Engineer</h3></div>
+                    <div class="role-card" data-role="Cybersecurity Analyst"><h3>Cybersecurity Analyst</h3></div>
+                    <div class="role-card" data-role="AI/ML Engineer"><h3>AI/ML Engineer</h3></div>
+                </div>
+
+                <h3 class="category-title" style="margin-top: 3rem; text-align: left; margin-bottom: 1rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem;">Business & Leadership</h3>
+                <div class="role-grid">
+                    <div class="role-card" data-role="HR Interview"><h3>HR Interview</h3></div>
+                    <div class="role-card" data-role="Communication Skills Round"><h3>Communication Round</h3></div>
+                    <div class="role-card" data-role="Managerial / Leadership Round"><h3>Managerial Round</h3></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Leaderboard -->
+        <section id="leaderboard-view" class="view">
+            <div class="content-wrapper">
+                <h2>Global Leaderboard 🏆</h2>
+                <p>Top performers across all tracks.</p>
+                <div class="leaderboard-container">
+                    <table id="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>User</th>
+                                <th>Score</th>
+                                <th>Confidence</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Mock Interview Engine -->
+        <section id="interview-engine" class="view">
+            <div class="interview-header">
+                <div>
+                    <h3 id="interview-role-title">Role Interview</h3>
+                    <span id="current-difficulty-badge" class="badge">Medium</span>
+                </div>
+                <div class="timer-container">
+                    <span class="timer-icon">⏳</span>
+                    <span id="countdown-timer">02:00</span>
+                </div>
+            </div>
+            
+            <div class="progress-container">
+                <div id="progress-bar" class="progress-bar" style="width: 0%;"></div>
+            </div>
+            <p id="progress-text">Question <span id="q-curr">1</span> of <span id="q-total">3</span></p>
+
+            <div class="question-container">
+                <div class="topic-tag" id="question-topic-tag">Topic</div>
+                <h2 id="current-question-text">Loading question...</h2>
+            </div>
+
+            <div class="answer-container">
+                <textarea id="answer-textarea" placeholder="Type your answer here... Avoid tab-switching."></textarea>
+            </div>
+
+            <div class="interview-actions">
+                <button id="btn-skip" class="btn btn-secondary">Skip Question</button>
+                <button id="btn-next" class="btn btn-primary">Submit & Next</button>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Session Report & Dashboard -->
+        <section id="dashboard" class="view">
+            <div class="dashboard-header">
+                <div>
+                    <h2>Session Report & Analytics</h2>
+                    <p class="subtitle">Detailed breakdown of your performance.</p>
+                </div>
+                <button id="btn-restart" class="btn btn-primary">Practice Again</button>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="kpi-card">
+                    <h4>Total Score</h4>
+                    <div id="kpi-score" class="kpi-value">--</div>
+                    <div class="kpi-subtext">Weighted System</div>
+                </div>
+                <div class="kpi-card">
+                    <h4>Confidence Level</h4>
+                    <div id="kpi-confidence" class="kpi-value badge">--</div>
+                    <div class="kpi-subtext" id="kpi-confidence-score">Score: --/100</div>
+                </div>
+            </div>
+
+            <div class="charts-container" style="grid-template-columns: 1fr 1fr; margin-top: 2rem;">
+                <div class="chart-card">
+                    <h3>Skill Heatmap</h3>
+                    <canvas id="heatmapChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3>Weak Area Detection</h3>
+                    <ul class="analysis-list" id="analysis-insights">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
