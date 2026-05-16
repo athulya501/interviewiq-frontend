@@ -1,5 +1,4 @@
-const API_BASE = 'http://localhost:8080/api';
-
+const API_BASE = "https://interviewiq-production-9a46.up.railway.app";
 // State
 let token = localStorage.getItem('jwt_token') || null;
 let currentRole = null;
